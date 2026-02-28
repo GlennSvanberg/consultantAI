@@ -1,5 +1,34 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalQuery, mutation, query } from "./_generated/server";
+
+export const listForTriage = internalQuery({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const employees = await ctx.db
+      .query("employees")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    return Promise.all(
+      employees.map(async (emp) => {
+        const skills = await Promise.all(
+          (emp.skillIds ?? []).map(async (sid) => {
+            const s = await ctx.db.get("skills", sid);
+            return s ? { name: s.name, description: s.description } : null;
+          })
+        );
+        return {
+          _id: emp._id,
+          name: emp.name,
+          specialty: emp.specialty,
+          instructions: emp.instructions ?? "",
+          skills: skills.filter((x): x is { name: string; description: string } =>
+            x !== null
+          ),
+        };
+      })
+    );
+  },
+});
 
 export const list = query({
   args: { userId: v.string() },
@@ -44,7 +73,8 @@ export const update = mutation({
     const filteredUpdates = Object.fromEntries(
       Object.entries(updates).filter(([_, val]) => val !== undefined)
     );
-    // eslint-disable-next-line @convex-dev/explicit-table-ids
-    await ctx.db.patch(employeeId, filteredUpdates as any);
+    if (Object.keys(filteredUpdates).length > 0) {
+      await ctx.db.patch("employees", employeeId, filteredUpdates as any);
+    }
   },
 });

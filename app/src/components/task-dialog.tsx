@@ -84,7 +84,7 @@ export function TaskDialog({ task, onClose, activeUser }: TaskDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 min-h-0 pr-4">
           <div className="space-y-6 py-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
@@ -101,6 +101,7 @@ export function TaskDialog({ task, onClose, activeUser }: TaskDialogProps) {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="resize-none"
                 rows={4}
               />
             </div>

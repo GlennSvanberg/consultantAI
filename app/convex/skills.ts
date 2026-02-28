@@ -33,7 +33,8 @@ export const update = mutation({
     const filteredUpdates = Object.fromEntries(
       Object.entries(updates).filter(([_, val]) => val !== undefined)
     );
-    // eslint-disable-next-line @convex-dev/explicit-table-ids
-    await ctx.db.patch(skillId, filteredUpdates as any);
+    if (Object.keys(filteredUpdates).length > 0) {
+      await ctx.db.patch("skills", skillId, filteredUpdates as any);
+    }
   },
 });

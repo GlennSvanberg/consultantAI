@@ -35,7 +35,7 @@ export const updateStatus = mutation({
   },
   handler: async (ctx, args) => {
     if (args.status === "refinement") {
-      await ctx.db.patch(args.taskId, {
+      await ctx.db.patch("tasks", args.taskId, {
         status: args.status,
         assignedAgentId: "refinement-agent",
       });
@@ -43,7 +43,7 @@ export const updateStatus = mutation({
         taskId: args.taskId,
       });
     } else {
-      await ctx.db.patch(args.taskId, { status: args.status });
+      await ctx.db.patch("tasks", args.taskId, { status: args.status });
     }
   },
 });
@@ -62,7 +62,8 @@ export const updateDetails = mutation({
     const filteredUpdates = Object.fromEntries(
       Object.entries(updates).filter(([_, val]) => val !== undefined)
     );
-    // eslint-disable-next-line @convex-dev/explicit-table-ids
-    await ctx.db.patch(taskId, filteredUpdates as any);
+    if (Object.keys(filteredUpdates).length > 0) {
+      await ctx.db.patch("tasks", taskId, filteredUpdates as any);
+    }
   },
 });

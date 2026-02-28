@@ -169,7 +169,7 @@ function EmployeeDialog({ employee, onClose, skills, activeUser }: { employee: a
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 min-h-0 pr-4">
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Name</Label>
@@ -262,7 +262,7 @@ function SkillDialog({ skill, onClose }: { skill: any, onClose: () => void }) {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 min-h-0 pr-4">
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Name</Label>
@@ -277,6 +277,7 @@ function SkillDialog({ skill, onClose }: { skill: any, onClose: () => void }) {
               <Textarea 
                 value={instructions} 
                 onChange={e => setInstructions(e.target.value)} 
+                className="resize-none"
                 rows={10} 
                 placeholder="# Skill Instructions\n\n1. Do this...\n2. Do that..."
               />
